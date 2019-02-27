@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 @author: Krish.Naik
+models from: https://keras.io/applications/
 """
 
 from keras.layers import Input, Lambda, Dense, Flatten
@@ -22,10 +23,10 @@ train_path = 'Datasets/Train'
 valid_path = 'Datasets/Test'
 
 # add preprocessing layer to the front of VGG
-vgg = VGG16(input_shape=IMAGE_SIZE + [3], weights='imagenet', include_top=False)
+net = VGG16(input_shape=IMAGE_SIZE + [3], weights='imagenet', include_top=False)
 
 # don't train existing weights
-for layer in vgg.layers:
+for layer in net.layers:
   layer.trainable = False
   
 
@@ -35,12 +36,12 @@ folders = glob('Datasets/Train/*')
   
 
 # our layers - you can add more if you want
-x = Flatten()(vgg.output)
+x = Flatten()(net.output)
 # x = Dense(1000, activation='relu')(x)
 prediction = Dense(len(folders), activation='softmax')(x)
 
 # create a model object
-model = Model(inputs=vgg.input, outputs=prediction)
+model = Model(inputs=net.input, outputs=prediction)
 
 # view the structure of the model
 model.summary()
